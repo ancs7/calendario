@@ -317,21 +317,6 @@
         // Function to initialize the couponsData structure with default values
         function initializeCouponsDataStructure() {
             couponsData = []; // Clear previous data
-            const couponTypes = [
-                { id: 'coupon-0', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
-                // Removed coupon-1 to have only two Uber Eats coupons
-                { id: 'coupon-1', type: 'mixed-temu-ubereats', offer: 'Pedido Mixto', description: 'de Temu o 2 Uber Eats.' },
-                { id: 'coupon-2', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' }
-                // Removed coupon-3 and coupon-4 to have only two Uber Eats coupons
-            ];
-            
-            // Re-index coupon IDs to be sequential after removal
-            // This is important for consistency if you always want coupon-0, coupon-1, etc.
-            // If the user wants specific coupons removed, then the IDs should be preserved.
-            // Based on "quita dos cupones de ubereats", I'm assuming removing from the default list
-            // and keeping the first and last of the original uber-eats, plus the mixed.
-            // Let's re-structure to ensure 2 uber-eats and 1 mixed coupon.
-
             // Define coupon types explicitly for 2 Uber Eats + 1 Mixed
             const newCouponTypes = [
                 { id: 'coupon-0', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
@@ -701,30 +686,42 @@
             choiceUberEatsButton = document.getElementById('choiceUberEats');
 
             // Firebase Initialization
-            const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            let firebaseConfig = {};
-            try {
-                firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-            } catch (e) {
-                console.error("Error al analizar __firebase_config:", e);
-                firebaseConfig = {
-                    apiKey: "AIzaSyDmO0eVx-1RLQjGsvBxNiS92Rqc2wZ5VEk",
-                    authDomain: "cupones-41b71.firebaseapp.com",
-                    projectId: "cupones-41b71",
-                    storageBucket: "cupones-41b71.firebasestorage.app",
-                    messagingSenderId: "866981366254",
-                    appId: "1:866981366254:web:16dba30b2e82ca2809e6ff",
-                    measurementId: "G-E5VY5HG9W7"
-                };
-                console.warn("Usando configuración de Firebase de respaldo. Asegúrate de que __firebase_config esté configurado en Canvas para producción.");
-            }
+            // Define a default/fallback config with all necessary properties
+            const defaultFirebaseConfig = {
+                apiKey: "AIzaSyDmO0eVx-1RLQjGsvBxNiS92Rqc2wZ5VEk",
+                authDomain: "cupones-41b71.firebaseapp.com",
+                projectId: "cupones-41b71", // Ensure projectId is here
+                storageBucket: "cupones-41b71.firebasestorage.app",
+                messagingSenderId: "866981366254",
+                appId: "1:866981366254:web:16dba30b2e82ca2809e6ff",
+                measurementId: "G-E5VY5HG9W7"
+            };
 
-            app = initializeApp(firebaseConfig);
+            let currentFirebaseConfig = { ...defaultFirebaseConfig }; // Start with default config
+
+            // Try to parse Canvas provided config and merge it
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                try {
+                    const canvasConfig = JSON.parse(__firebase_config);
+                    Object.assign(currentFirebaseConfig, canvasConfig); // Merge Canvas config over default
+                    console.log("Configuración de Firebase de Canvas aplicada.");
+                } catch (e) {
+                    console.error("Error al analizar __firebase_config. Usando configuración predeterminada:", e);
+                    console.warn("Asegúrate de que __firebase_config esté configurado correctamente en Canvas para producción.");
+                }
+            } else {
+                console.warn("No se proporcionó __firebase_config. Usando configuración predeterminada de Firebase.");
+            }
+            
+            console.log("Configuración final de Firebase para initializeApp:", currentFirebaseConfig); // Debugging final config
+
+            app = initializeApp(currentFirebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
 
             // Use onAuthStateChanged to ensure auth is ready before Firestore operations
             onAuthStateChanged(auth, async (user) => {
+                console.log('onAuthStateChanged triggered. User:', user); // Debugging line
                 if (user) {
                     userId = user.uid;
                     displayUserIdElement.textContent = userId; // Display user ID
@@ -742,8 +739,10 @@
                         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                         if (initialAuthToken) {
                             await signInWithCustomToken(auth, initialAuthToken);
+                            console.log("Sign-in con token personalizado exitoso.");
                         } else {
                             await signInAnonymously(auth);
+                            console.log("Sign-in anónimo exitoso.");
                         }
                     } catch (error) {
                         console.error("Error al iniciar sesión anónimamente con Firebase:", error);
@@ -850,3 +849,4 @@
     </script>
 </body>
 </html>
+
