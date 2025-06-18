@@ -77,17 +77,21 @@
         .coupon-card.used .text-gray-700 {
             color: #7f1d1d; /* Dark red text for used coupons */
         }
-        /* Specific styling for the disabled assign button within a used card */
-        .coupon-card.used .assign-day-button {
-            background-color: #9ca3af !important; /* Tailwind gray-400, !important to ensure override */
-            cursor: not-allowed !important;
-            border-color: #9ca3af !important;
-            color: #e5e7eb !important; /* Light text for better contrast on gray */
-        }
-        .coupon-card.used .assign-day-button:hover {
-            background-color: #9ca3af !important; /* No hover effect for used button */
-        }
 
+        /* Styling for the disabled assign button (any type) */
+        .assign-day-button:disabled {
+            background-color: #9ca3af; /* Tailwind gray-400 */
+            cursor: not-allowed;
+            border-color: #9ca3af;
+            color: #e5e7eb; /* Light text for better contrast on gray */
+            pointer-events: none; /* Prevents interaction even if cursor looks clickable */
+            /* Remove all hover effects for disabled state */
+            transform: none;
+            box-shadow: none;
+        }
+        .assign-day-button:disabled:hover {
+            background-color: #9ca3af; /* No hover change for disabled */
+        }
 
         /* Style for selected day in calendar */
         .calendar-day-assigned {
@@ -393,10 +397,7 @@
                             }
                             const assignButton = couponCardElement.querySelector('.assign-day-button');
                             if (assignButton) {
-                                assignButton.disabled = true; // Disable the button
-                                // Remove all previous color classes and add the gray one
-                                assignButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'bg-orange-500', 'hover:bg-orange-600');
-                                assignButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                                assignButton.disabled = true; // Disable the button. CSS will handle the gray styling.
                                 assignButton.textContent = 'Cupón Usado'; // Change button text
                             }
                         }
