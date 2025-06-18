@@ -93,13 +93,20 @@
             background-color: #9ca3af; /* No hover change for disabled */
         }
 
-        /* Style for selected day in calendar */
-        .calendar-day-assigned {
-            background-color: #60a5fa; /* Blue for assigned days */
+        /* Custom styles for assigned calendar days based on coupon type */
+        .calendar-day-uber-eats-assigned {
+            background-color: #34d399; /* Tailwind green-400 */
             color: white;
             font-weight: bold;
-            border: 1px solid #2563eb;
+            border: 1px solid #059669; /* Tailwind green-600 */
         }
+        .calendar-day-temu-assigned {
+            background-color: #fbbf24; /* Tailwind amber-400 */
+            color: white;
+            font-weight: bold;
+            border: 1px solid #d97706; /* Tailwind amber-700 */
+        }
+
         /* Custom style for the 21st day - pink square */
         .calendar-day-rose {
             background-color: #fbcfe8; /* Tailwind pink-200 for a soft rose color */
@@ -213,7 +220,8 @@
             const year = 2025;
             const month = 6; // July is month 6 (0-indexed)
 
-            let assignedDays = new Set(); // To keep track of days already assigned a coupon
+            // Changed assignedDays from Set to Map to store coupon type
+            let assignedDaysMap = new Map(); // Map<dayNumber, couponType>
             let activeCouponId = null; // To store the ID of the coupon being assigned
             let couponsData = []; // To store coupon information including assignment status
 
@@ -245,13 +253,13 @@
                 // Add days of the month
                 for (let i = 1; i <= daysInMonth; i++) {
                     const dayElement = document.createElement('div');
-                    dayElement.classList.add('p-3', 'text-center', 'rounded-md', 'shadow-sm', 'text-gray-700', 'font-medium');
+                    dayElement.classList.add('p-3', 'text-center', 'rounded-md', 'shadow-sm', 'font-medium');
 
                     // Base style for calendar days
                     if (isModal) {
-                        dayElement.classList.add('bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer');
+                        dayElement.classList.add('bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'text-gray-700');
                     } else {
-                        dayElement.classList.add('bg-gray-50');
+                        dayElement.classList.add('bg-gray-50', 'text-gray-700');
                     }
 
                     dayElement.textContent = i;
@@ -261,16 +269,22 @@
 
                     // Apply rose square styling for the 21st day
                     if (i === 21) {
-                        dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200');
+                        dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'text-gray-700');
                         dayElement.classList.add('calendar-day-rose');
                     }
 
                     // Check if day is already assigned for both calendars
-                    if (assignedDays.has(i)) {
-                        dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'calendar-day-rose'); // Remove other day styles
-                        dayElement.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'calendar-day-assigned'); // Grey out assigned days
-                        // Append coupon message if assigned
-                        dayContent += `<br><span class="text-xs text-white-300">(¡Cupón aquí!)</span>`;
+                    if (assignedDaysMap.has(i)) {
+                        const assignedType = assignedDaysMap.get(i);
+                        dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'calendar-day-rose', 'text-gray-700'); // Remove default and rose styles
+                        
+                        if (assignedType === 'uber-eats') {
+                            dayElement.classList.add('calendar-day-uber-eats-assigned');
+                        } else if (assignedType === 'temu') {
+                            dayElement.classList.add('calendar-day-temu-assigned');
+                        }
+                        dayElement.classList.add('cursor-not-allowed'); // Ensure it's not clickable in modal too
+                        dayContent += `<br><span class="text-xs text-white">(¡Cupón aquí!)</span>`; // Changed to white for better contrast
                     } else if (isModal) {
                         dayElement.classList.add('cursor-pointer', 'hover:bg-blue-200'); // Only clickable in modal if not assigned
                     }
@@ -287,7 +301,7 @@
                 for (let i = 0; i < 10; i++) {
                     result += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
-                return `UBEREATS${result}`;
+                return `CODE${result}`; // Simplified code prefix as it's not displayed
             }
 
             // Display coupons and set up initial state
@@ -312,6 +326,7 @@
                         offer: couponInfo.offer,
                         description: couponInfo.description,
                         assignedDay: null, // Initially unassigned
+                        type: couponInfo.type, // Store coupon type
                         element: null // Will store reference to the DOM element
                     });
 
@@ -360,7 +375,7 @@
             // Event listener for selecting a day in the modal
             modalCalendarGrid.addEventListener('click', (event) => {
                 const dayElement = event.target.closest('div[data-day]');
-                if (dayElement && !assignedDays.has(parseInt(dayElement.dataset.day))) {
+                if (dayElement && !assignedDaysMap.has(parseInt(dayElement.dataset.day))) {
                     const selectedDay = parseInt(dayElement.dataset.day);
 
                     // Find the active coupon
@@ -368,22 +383,24 @@
 
                     if (couponToAssign) {
                         couponToAssign.assignedDay = selectedDay;
-                        assignedDays.add(selectedDay);
+                        assignedDaysMap.set(selectedDay, couponToAssign.type); // Store day and coupon type
 
                         // Update main calendar day visual
                         const mainCalendarDayElement = document.getElementById(`day-${selectedDay}`);
                         if (mainCalendarDayElement) {
                             let newDayContent = `${selectedDay}`;
-                            // Reapply rose style if it's the 21st, then add coupon message
-                            if (selectedDay === 21) {
-                                mainCalendarDayElement.classList.remove('calendar-day-rose'); // Remove initial rose styling
-                                mainCalendarDayElement.classList.add('calendar-day-assigned'); // Add assigned day styling
-                                // To ensure "21" remains visible with coupon, explicitly add it.
-                                newDayContent = `${selectedDay}<br><span class="text-xs text-white-300">(¡Cupón aquí!)</span>`;
-                            } else {
-                                mainCalendarDayElement.classList.add('calendar-day-assigned');
-                                newDayContent += `<br><span class="text-xs text-white-300">(¡Cupón aquí!)</span>`;
+                            // Remove all previous styles to apply the new one cleanly
+                            mainCalendarDayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'calendar-day-rose', 'text-gray-700');
+                            
+                            if (couponToAssign.type === 'uber-eats') {
+                                mainCalendarDayElement.classList.add('calendar-day-uber-eats-assigned');
+                            } else if (couponToAssign.type === 'temu') {
+                                mainCalendarDayElement.classList.add('calendar-day-temu-assigned');
                             }
+                            mainCalendarDayElement.classList.add('cursor-not-allowed'); // Make it unclickable
+
+                            // Add the coupon text
+                            newDayContent += `<br><span class="text-xs text-white">(¡Cupón aquí!)</span>`;
                             mainCalendarDayElement.innerHTML = newDayContent;
                         }
 
