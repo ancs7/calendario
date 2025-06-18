@@ -517,7 +517,8 @@
                 return;
             }
 
-            const docRef = doc(db, `artifacts/${appId}/users/${userId}/couponState`, 'current');
+            // Using a PUBLIC path for shared data
+            const docRef = doc(db, `artifacts/${appId}/public/data/sharedCouponState`, 'current');
 
             onSnapshot(docRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -532,10 +533,12 @@
                             assignedDays: [],
                             currentAssignments: 0
                         };
+                        // For Temu coupon, set its initial chosenMode and maxAssignments from saved state
                         if (newCoupon.type === 'temu') {
-                            newCoupon.chosenMode = 'unselected'; // Reset chosen mode on initial load
-                            newCoupon.maxAssignments = newCoupon.initialMaxAssignments;
-                            newCoupon.currentDisplayType = newCoupon.initialType;
+                             const savedTemuCoupon = savedState.coupons.find(sc => sc.id === newCoupon.id);
+                             newCoupon.chosenMode = savedTemuCoupon ? savedTemuCoupon.chosenMode : 'unselected';
+                             newCoupon.maxAssignments = newCoupon.chosenMode === 'ubereats' ? newCoupon.maxAssignmentsUberMode : newCoupon.initialMaxAssignments;
+                             newCoupon.currentDisplayType = newCoupon.chosenMode === 'ubereats' ? 'ubereats' : newCoupon.initialType;
                         } else {
                             newCoupon.maxAssignments = newCoupon.initialMaxAssignments;
                             newCoupon.currentDisplayType = newCoupon.type;
@@ -549,7 +552,7 @@
                         savedState.coupons.forEach(savedCoupon => {
                             const localCoupon = coupons.find(c => c.id === savedCoupon.id);
                             if (localCoupon) {
-                                // For Temu coupon, set its chosenMode first
+                                // Temu specific: update chosenMode and currentDisplayType
                                 if (localCoupon.type === 'temu') {
                                     localCoupon.chosenMode = savedCoupon.chosenMode || 'unselected';
                                     localCoupon.maxAssignments = localCoupon.chosenMode === 'ubereats' ? localCoupon.maxAssignmentsUberMode : localCoupon.initialMaxAssignments;
@@ -601,7 +604,8 @@
                 return;
             }
 
-            const docRef = doc(db, `artifacts/${appId}/users/${userId}/couponState`, 'current');
+            // Using a PUBLIC path for shared data
+            const docRef = doc(db, `artifacts/${appId}/public/data/sharedCouponState`, 'current');
             const stateToSave = {
                 coupons: coupons.map(c => {
                     const couponData = {
@@ -609,7 +613,7 @@
                         isUsed: c.isUsed,
                         assignedDays: c.assignedDays,
                         currentAssignments: c.currentAssignments,
-                        maxAssignments: c.maxAssignments // Save maxAssignments to persist Temu mode
+                        maxAssignments: c.maxAssignments
                     };
                     if (c.type === 'temu') {
                         couponData.chosenMode = c.chosenMode;
@@ -669,7 +673,7 @@
                     const assignedCoupon = coupons.find(c => c.id === assignedCouponId);
                     if (assignedCoupon) {
                         const couponLabel = document.createElement('span');
-                        // Use currentDisplayType for calendar label styling
+                        // Use currentDisplayType for calendar label styling and text
                         couponLabel.className = `coupon-assigned ${assignedCoupon.currentDisplayType}-assigned`;
                         couponLabel.textContent = assignedCoupon.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats';
                         dayElement.appendChild(couponLabel);
@@ -712,7 +716,7 @@
 
                         // Visual updates for the day
                         const couponLabel = document.createElement('span');
-                        // Use currentDisplayType for calendar label styling
+                        // Use currentDisplayType for calendar label styling and text
                         couponLabel.className = `coupon-assigned ${couponToAssign.currentDisplayType}-assigned`;
                         couponLabel.textContent = couponToAssign.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats';
                         dayElement.appendChild(couponLabel);
@@ -759,7 +763,7 @@
                         if (unassignedCoupon.type === 'temu' && unassignedCoupon.currentAssignments === 0) {
                             unassignedCoupon.chosenMode = 'unselected';
                             unassignedCoupon.maxAssignments = unassignedCoupon.initialMaxAssignments;
-                            unassignedCoupon.currentDisplayType = unassignedCoupon.initialType; // Reset display type
+                            unassignedCoupon.currentDisplayType = unassignedCoupon.initialType; // Reset display type to temu
                             console.log(`Cupón Temu (${unassignedCoupon.id}) reseteado a modo no seleccionado.`);
                         }
 
@@ -774,6 +778,10 @@
                         if (couponCard) {
                             if (!unassignedCoupon.isUsed) {
                                 couponCard.classList.remove('used');
+                                // If Temu coupon is reset, ensure it also removes ubereats-mode class
+                                if (unassignedCoupon.type === 'temu' && unassignedCoupon.chosenMode === 'unselected') {
+                                     couponCard.classList.remove('ubereats-mode');
+                                }
                             }
                         }
 
