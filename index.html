@@ -3,938 +3,850 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Cupones de Julio para mi Amor</title>
+    <title>Calendario de Cupones</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* Custom styles for the Inter font and overall look */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light gray background from Pastebin */
-            display: flex;
-            justify-content: center;
-            align-items: center; /* Center vertically */
-            min-height: 100vh; /* Full viewport height */
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: #ffffff;
-            border-radius: 1.5rem; /* More rounded */
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18); /* Stronger shadow */
-            padding: 3rem; /* Increased padding */
-            max-width: 1000px; /* Slightly wider max-width */
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 3rem; /* Increased gap between main sections */
-        }
-        @media (min-width: 768px) {
-            .container {
-                flex-direction: column; /* Keep as column for main structure for better flow on desktop too */
-            }
-        }
-        @media (min-width: 1024px) {
-            .main-content-flex {
-                flex-direction: row; /* For large screens, put calendar and coupons side by side */
-                gap: 3rem;
-            }
-        }
-
-        /* Calendar Styles based on Pastebin */
-        .calendar-section {
-            background-color: #f8f8f8; /* A very light gray background for the calendar area */
-            border-radius: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            padding: 1.5rem;
-        }
-
-        .calendar-header-month {
-            background-color: #2563eb; /* Tailwind blue-600 */
-            color: white;
-            padding: 1rem;
-            border-top-left-radius: 0.5rem;
-            border-top-right-radius: 0.5rem;
-            text-align: center;
-            font-size: 1.75rem; /* text-3xl */
-            font-weight: 700; /* font-semibold */
-        }
-        .calendar-grid-headers {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 0.25rem; /* gap-1 */
-            text-align: center;
-            background-color: #3b82f6; /* Tailwind blue-500 */
-            color: white;
-            padding-top: 0.75rem; /* Increased padding */
-            padding-bottom: 0.75rem;
-            border-bottom-left-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
-        }
-        .calendar-grid-headers .day-header {
-            background-color: transparent; /* Override day-header default */
-            box-shadow: none;
-            color: white;
-            font-size: 1rem;
-            font-weight: 700; /* Bolder */
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            cursor: default;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 0.5rem; /* Increased gap */
-            margin-top: 1rem; /* mt-4 */
-        }
-        .calendar-day {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0.75rem;
-            border-radius: 0.5rem; /* rounded-md */
-            font-weight: 500; /* font-medium */
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
-            background-color: #f9fafb; /* Tailwind gray-50 */
-            color: #4b5563; /* Tailwind gray-700 */
-            min-height: 70px; /* Slightly taller */
-            flex-direction: column;
-            text-align: center;
-            user-select: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07); /* Slightly stronger shadow */
-        }
-        .calendar-day:not(.empty-day):hover {
-            background-color: #e0f2f7; /* Light blue from previous version, good contrast */
-            transform: translateY(-3px); /* More prominent hover */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .empty-day {
-            background-color: #e5e7eb; /* Tailwind gray-200 for empty days */
-            cursor: default;
-            box-shadow: none;
-            border: none;
-            border-radius: 0.5rem;
-        }
-        .coupon-assigned {
-            border: 2px solid;
-            padding: 0.25rem 0.7rem; /* More padding */
-            border-radius: 0.75rem; /* More rounded */
-            font-size: 0.8rem; /* Slightly larger font */
-            margin-top: 0.5rem; /* More space */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            font-weight: 700;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        /* Uber Eats assigned coupon color from Pastebin */
-        .ubereats-assigned {
-            background-color: #34d399; /* Tailwind green-400 */
-            color: white;
-            font-weight: bold;
-            border-color: #059669; /* Tailwind green-600 */
-        }
-        /* Temu assigned coupon color from Pastebin */
-        .temu-assigned {
-            background-color: #fbbf24; /* Tailwind amber-400 */
-            color: white;
-            font-weight: bold;
-            border-color: #d97706; /* Tailwind amber-700 */
-        }
-        /* Custom style for the 21st day - rose square from Pastebin */
-        .calendar-day-rose {
-            background-color: #fbcfe8; /* Tailwind pink-200 for a soft rose color */
-            border: 1px solid #f472b6; /* Tailwind pink-400 for border */
-            font-weight: bold;
-            color: #831843; /* Darker pink for text */
-        }
-
-
-        /* Coupon Card Styles based on Pastebin */
-        .coupon-section {
-            background-color: #f8f8f8; /* A very light gray background for the coupon area */
-            padding: 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            background-color: #f0f4f8; /* Light gray background */
         }
         .coupon-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1.75rem; /* More padding */
-            border-radius: 1.25rem; /* More rounded */
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12); /* Stronger shadow */
-            cursor: pointer;
+            background: linear-gradient(135deg, #a7f3d0, #6ee7b7); /* Green gradient for Uber Eats */
+            border: 2px dashed #065f46; /* Darker green dashed border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            position: relative;
+            position: relative; /* Needed for the pseudo-elements */
             overflow: hidden;
-            border: 2px dashed #065f46; /* Default dashed border (Uber Eats) */
+        }
+        .coupon-card:hover {
+            transform: translateY(-3px); /* Lift effect on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); /* Stronger shadow on hover */
         }
         .coupon-card::before, .coupon-card::after {
             content: '';
             position: absolute;
             background-color: #f0f4f8; /* Background color to match the body */
             border-radius: 50%;
-            height: 25px; /* Larger cutouts */
-            width: 25px; /* Larger cutouts */
+            height: 20px;
+            width: 20px;
             top: 50%;
             transform: translateY(-50%);
         }
         .coupon-card::before {
-            left: -12.5px; /* Adjust for larger cutout */
+            left: -10px; /* Position cutout on the left */
         }
         .coupon-card::after {
-            right: -12.5px; /* Adjust for larger cutout */
+            right: -10px; /* Position cutout on the right */
         }
 
-        /* Uber Eats specific gradient */
-        .ubereats {
-            background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%); /* Green gradient */
-            color: #065f46; /* Dark green text for better contrast on light green */
+        /* Style for the mixed Temu/Uber Eats coupon card */
+        .coupon-card.mixed-temu-ubereats {
+            background-image: linear-gradient(to right, #a7f3d0 50%, #fbbf24 50%); /* Half green, half amber */
+            border: 2px dashed #065f46; /* Default green dashed border for consistency, or #d97706 for split */
         }
-        /* Temu specific gradient and border (Half Temu, Half Uber visual) */
-        .temu {
-            /* Now, the gradient needs to adjust based on chosenMode for consistent visuals */
-            background: linear-gradient(to right, #fecaca 0%, #fbbf24 50%, #a7f3d0 50%, #6ee7b7 100%); /* Split gradient Temu/UberEats */
-            border-color: #d97706; /* Keep Temu's border color initially */
-            color: #333; /* Darker text to be visible on both sides of the split gradient */
+        .coupon-card.mixed-temu-ubereats h3 {
+            color: #d97706; /* Darker orange for the offer text */
         }
-
-        /* Specific styling for when Temu coupon is visually acting as Uber Eats */
-        .temu.ubereats-mode {
-            background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%); /* Full green gradient */
-            border-color: #065f46; /* Uber Eats border color */
-            color: #065f46; /* Uber Eats text color */
+        .coupon-card.mixed-temu-ubereats .assign-day-button {
+            background-color: #f97316; /* Orange-600 for button */
+            border-color: #f97316;
         }
-        .temu.ubereats-mode.used { /* Ensure used state for Temu in UberEats mode is still red */
-            background: linear-gradient(135deg, #fef2f2 0%, #fca5a5 100%);
-            border: 2px dashed #dc2626;
-            color: #b91c1c;
+        .coupon-card.mixed-temu-ubereats .assign-day-button:hover {
+            background-color: #ea580c; /* Orange-700 on hover */
         }
 
-        .coupon-card:hover {
-            transform: translateY(-5px); /* More prominent lift effect on hover */
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.18); /* Stronger shadow on hover */
-        }
-        .coupon-card.selected {
-            border: 3px solid #10b981; /* Tailwind green-500 */
-            box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.5), 0 15px 30px rgba(0, 0, 0, 0.25); /* Green glow + strong shadow */
-        }
+        /* Style for used coupon cards (red/grayed out) */
         .coupon-card.used {
-            background: linear-gradient(135deg, #fef2f2 0%, #fca5a5 100%); /* Lighter red gradient for used */
-            border: 2px dashed #dc2626; /* Darker red dashed border (red-600) */
-            opacity: 0.8; /* Slightly less opaque */
+            background: linear-gradient(135deg, #fecaca, #ef4444); /* Red gradient (red-200 to red-500) */
+            border: 2px dashed #b91c1c; /* Darker red dashed border (red-700) */
+            opacity: 0.7;
             cursor: default;
+        }
+        .coupon-card.used:hover {
             transform: none; /* No lift effect for used coupons */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Original shadow for used coupons */
         }
-        /* Text color for used coupon cards */
-        .coupon-card.used .coupon-text,
-        .coupon-card.used .coupon-value,
-        .coupon-card.used .text-sm { /* Also target the status text */
-            color: #b91c1c; /* Dark red text for used coupons from Pastebin */
+        .coupon-card.used .text-gray-800,
+        .coupon-card.used .text-green-900,
+        .coupon-card.used .text-amber-700,
+        .coupon-card.used .text-gray-700 {
+            color: #7f1d1d; /* Dark red text for used coupons */
         }
 
-        .coupon-text {
-            font-weight: 800; /* Extra bold */
-            font-size: 1.6rem; /* Even larger text */
-            text-align: center;
-            letter-spacing: -0.5px; /* Slightly tighter text */
+        /* Styling for the disabled assign button (any type) */
+        .assign-day-button:disabled {
+            background-color: #9ca3af !important; /* Tailwind gray-400, !important to ensure override */
+            cursor: not-allowed !important;
+            border-color: #9ca3af !important;
+            color: #e5e7eb !important; /* Light text for better contrast on gray */
+            pointer-events: none !important; /* Prevents interaction even if cursor looks clickable */
+            /* Remove all hover effects for disabled state */
+            transform: none !important;
+            box-shadow: none !important;
         }
-        .coupon-value {
-            font-size: 1.1rem; /* Larger value text */
-            margin-top: 0.6rem;
-            opacity: 0.9;
-        }
-
-        .header-title {
-            font-size: 2.5rem; /* text-4xl */
-            font-weight: 800; /* font-extrabold */
-            text-align: center;
-            color: #1a202c; /* text-gray-900 */
-            margin-bottom: 1.5rem; /* mb-6 */
-        }
-        .intro-text {
-            text-align: center;
-            color: #4a5568; /* text-gray-700 */
-            margin-bottom: 2.5rem; /* mb-10 */
-            font-size: 1.1rem;
-            line-height: 1.6;
+        .assign-day-button:disabled:hover {
+            background-color: #9ca3af !important; /* No hover change for disabled */
         }
 
-        /* Modal Styles */
+        /* Styling for the remove button */
+        .remove-day-button {
+            background-color: #ef4444; /* Tailwind red-500 */
+        }
+        .remove-day-button:hover {
+            background-color: #dc2626; /* Tailwind red-600 */
+        }
+        .remove-day-button:disabled {
+            opacity: 0.5; /* Slightly faded when disabled even if visible */
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+
+        /* Custom styles for assigned calendar days based on coupon type */
+        .calendar-day-uber-eats-assigned {
+            background-color: #34d399; /* Tailwind green-400 */
+            color: white;
+            font-weight: bold;
+            border: 1px solid #059669; /* Tailwind green-600 */
+        }
+        .calendar-day-temu-assigned {
+            background-color: #fbbf24; /* Tailwind amber-400 */
+            color: white;
+            font-weight: bold;
+            border: 1px solid #d97706; /* Tailwind amber-700 */
+        }
+        .calendar-day-temp-selected {
+            background-color: #bfdbfe; /* Tailwind blue-200 for temporary selection */
+            border: 1px dashed #60a5fa; /* Tailwind blue-400 dashed border */
+        }
+
+        /* Custom style for the 21st day - pink square */
+        .calendar-day-rose {
+            background-color: #fbcfe8; /* Tailwind pink-200 for a soft rose color */
+            border: 1px solid #f472b6; /* Tailwind pink-400 for border */
+            font-weight: bold;
+            color: #831843; /* Darker pink for text */
+        }
+        /* Modal styles */
         .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
+            z-index: 1001; /* Sit on top */
             left: 0;
             top: 0;
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
-            display: flex; /* Use flex for centering */
-            justify-content: center;
-            align-items: center;
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
             opacity: 0;
             transition: opacity 0.3s ease-in-out;
-            pointer-events: none; /* Allows clicks to pass through when hidden */
         }
         .modal.show {
+            display: flex; /* Changed from block to flex for centering */
             opacity: 1;
-            pointer-events: auto; /* Enables clicks when shown */
         }
         .modal-content {
             background-color: #fefefe;
-            padding: 30px;
-            border-radius: 1rem; /* More rounded */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             width: 90%;
-            max-width: 400px; /* Slightly narrower modal */
-            text-align: center;
-            transform: translateY(-20px); /* Initial slightly up for animation */
-            transition: transform 0.3s ease-in-out;
-        }
-        .modal.show .modal-content {
-            transform: translateY(0); /* Animate to center */
+            max-width: 500px;
         }
         .close-button {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
-            cursor: pointer;
-            line-height: 1; /* Adjust line height for better alignment */
-            margin-top: -10px; /* Pull it slightly up */
-            margin-right: -10px; /* Pull it slightly right */
         }
         .close-button:hover,
         .close-button:focus {
-            color: #333;
+            color: black;
             text-decoration: none;
-        }
-        .modal-buttons {
-            display: flex;
-            flex-direction: column; /* Stack buttons vertically */
-            gap: 15px; /* Space between buttons */
-            margin-top: 25px;
-        }
-        .modal-buttons button {
-            padding: 12px 25px;
-            border-radius: 0.75rem; /* Rounded buttons */
-            font-size: 1.1rem;
-            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .modal-buttons button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .modal-buttons .btn-temu {
-            background-color: #fbbf24; /* Amber-400 */
-            color: #d97706; /* Amber-700 */
-            border: 2px solid #d97706;
-        }
-        .modal-buttons .btn-temu:hover {
-            background-color: #f59e0b; /* Amber-500 */
-        }
-        .modal-buttons .btn-ubereats {
-            background-color: #34d399; /* Green-400 */
+
+        /* User ID display at bottom left */
+        #user-id-display {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
-            border: 2px solid #059669; /* Green-600 */
-        }
-        .modal-buttons .btn-ubereats:hover {
-            background-color: #10b981; /* Green-500 */
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            z-index: 999;
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
-    <div class="container">
-        <h1 class="header-title">
+
+    <div class="max-w-4xl w-full bg-white rounded-lg shadow-xl p-6 sm:p-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-6">
             Calendario de Julio 2025 para mi Amor ❤️
         </h1>
-        <p class="intro-text">
-            Aquí tienes tu calendario de Julio con algunas sorpresas especiales para tus antojos. Haz clic en un cupón para seleccionarlo, luego haz clic en el día que quieras usarlo. ¡Haz clic en un día con cupón para quitarlo!
+        <p class="text-center text-gray-600 mb-8">
+            Aquí tienes tu calendario de Julio con algunas sorpresas especiales para tus antojos. ¡Haz clic en "Asignar Día" en un cupón para elegir cuándo usarlo!
         </p>
 
-        <div class="flex flex-col lg:flex-row main-content-flex">
+        <div class="flex flex-col lg:flex-row gap-8">
             <!-- Calendar Section -->
-            <div class="flex-1 calendar-section">
-                <div class="calendar-header-month">
+            <div class="flex-1">
+                <div class="bg-blue-600 text-white p-4 rounded-t-lg text-center text-2xl font-semibold">
                     Julio 2025
                 </div>
-                <div class="calendar-grid-headers">
-                    <div class="day-header">Dom</div>
-                    <div class="day-header">Lun</div>
-                    <div class="day-header">Mar</div>
-                    <div class="day-header">Mié</div>
-                    <div class="day-header">Jue</div>
-                    <div class="day-header">Vie</div>
-                    <div class="day-header">Sáb</div>
+                <div class="grid grid-cols-7 gap-1 text-center bg-blue-500 text-white py-2 rounded-b-lg">
+                    <div class="p-2 font-semibold">Dom</div>
+                    <div class="p-2 font-semibold">Lun</div>
+                    <div class="p-2 font-semibold">Mar</div>
+                    <div class="p-2 font-semibold">Mié</div>
+                    <div class="p-2 font-semibold">Jue</div>
+                    <div class="p-2 font-semibold">Vie</div>
+                    <div class="p-2 font-semibold">Sáb</div>
                 </div>
-                <div id="calendar-grid" class="calendar-grid">
-                    <!-- Calendar days will be dynamically generated here by JavaScript -->
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 mt-4">
+                    <!-- Calendar days will be generated here by JavaScript -->
                 </div>
             </div>
 
             <!-- Coupons Section -->
-            <div class="flex-1 coupon-section">
+            <div class="flex-1 bg-gray-50 p-6 rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Tus Cupones</h2>
-                <div id="couponsContainer" class="flex flex-col gap-5">
-                    <!-- Coupons will be dynamically generated here by JavaScript -->
+                <div id="coupon-list" class="space-y-4">
+                    <!-- Coupons will be generated here by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Temu Mode Selection Modal -->
-    <div id="temuModeSelectionModal" class="modal">
+    <!-- The Modal for Day Selection -->
+    <div id="daySelectionModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" id="closeTemuModal">&times;</span>
-            <h3 class="text-2xl font-bold text-gray-800 mb-4">¿Cómo quieres usar este cupón?</h3>
-            <p class="text-gray-600 mb-6">Puedes usarlo como un cupón regular de Temu (1 día) o como un cupón de Uber Eats especial (2 días).</p>
-            <div class="modal-buttons">
-                <button id="selectTemuModeTemu" class="btn-temu">Usar como Cupón Temu (1 día)</button>
-                <button id="selectTemuModeUberEats" class="btn-ubereats">Usar como Cupón Uber Eats (2 días)</button>
+            <span class="close-button">&times;</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Selecciona un día para tu cupón</h3>
+            <div id="modal-calendar-grid" class="grid grid-cols-7 gap-1 text-center mt-4">
+                <!-- Modal calendar days will be generated here -->
             </div>
         </div>
     </div>
 
-    <script>
-        // Global variables for Firebase configuration, App ID, and Auth Token.
-        // These are provided by the Canvas environment.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+    <!-- New Modal for Mixed Coupon Choice -->
+    <div id="mixedCouponChoiceModal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-button">&times;</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-6">¿Cómo quieres usar este cupón especial?</h3>
+            <div class="flex flex-col space-y-4">
+                <button id="choiceTemu" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-md text-lg font-semibold transition duration-200">
+                    Asignar como Pedido de Temu (1 día)
+                </button>
+                <button id="choiceUberEats" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md text-lg font-semibold transition duration-200">
+                    Asignar como Dos Pedidos de Uber Eats (2 días)
+                </button>
+            </div>
+        </div>
+    </div>
 
-        // Firebase Imports (Lazy load to ensure they are used after configuration check)
-        let firebaseApp, auth, db;
-        // Declare Firestore functions globally to make them accessible
-        let doc, setDoc, onSnapshot, collection;
-        let userId = 'anonymous'; // Default to anonymous if not authenticated
+    <!-- User ID Display -->
+    <div id="user-id-display">
+        ID de Usuario: <span id="display-user-id">Cargando...</span>
+    </div>
 
-        // Define coupon data with initial maxAssignments and a 'mode' property for Temu
-        const couponData = [
-            { id: 'ubereats1', type: 'ubereats', maxAssignments: 1, initialMaxAssignments: 1, code: 'UBEREATS15OFF1' },
-            { id: 'ubereats2', type: 'ubereats', maxAssignments: 1, initialMaxAssignments: 1, code: 'UBEREATSFREE1' },
-            { id: 'ubereats3', type: 'ubereats', maxAssignments: 1, initialMaxAssignments: 1, code: 'UBEREATS10OFF2' },
-            { id: 'temu1', type: 'temu', initialType: 'temu', initialMaxAssignments: 1, maxAssignmentsUberMode: 2, chosenMode: 'unselected', code: 'TEMU20OFF' } // Temu coupon with hybrid options
-        ];
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // State variables
-        let coupons = couponData.map(c => {
-            const newCoupon = {
-                ...c,
-                isUsed: false,
-                assignedDays: [], // Always initialize as an empty array
-                currentAssignments: 0 // Always initialize as 0
-            };
-            // For Temu coupon, set its initial maxAssignments and type based on its chosenMode property (if it exists)
-            if (newCoupon.type === 'temu') {
-                newCoupon.maxAssignments = newCoupon.chosenMode === 'ubereats' ? newCoupon.maxAssignmentsUberMode : newCoupon.initialMaxAssignments;
-                // Dynamically set the 'type' property based on chosenMode for consistent styling on calendar
-                newCoupon.currentDisplayType = newCoupon.chosenMode === 'ubereats' ? 'ubereats' : newCoupon.initialType;
-            } else {
-                 newCoupon.currentDisplayType = newCoupon.type; // For non-Temu coupons, type is constant
+        // Global variables for Firebase
+        let app;
+        let db;
+        let auth;
+        let userId = null;
+        let isFirebaseReady = false;
+
+        // Define global constants and variables
+        const year = 2025;
+        const month = 6; // July is month 6 (0-indexed)
+
+        let assignedDaysMap = new Map(); // Map<dayNumber, couponTypeUsed> where couponTypeUsed is 'uber-eats' or 'temu'
+        let couponsData = []; // To store coupon information including assignment status
+
+        let activeCouponId = null; // ID of the coupon currently being assigned
+        let assigningAsTemu = false; // Flag for single Temu assignment
+        let assigningTwoUberEats = false; // Flag for two Uber Eats assignments
+        let selectedDaysForTwoCoupons = []; // Stores days temporarily selected for two Uber Eats coupons
+
+        // DOM elements (will be assigned inside DOMContentLoaded)
+        let calendarGrid;
+        let couponList;
+        let daySelectionModal;
+        let closeModalButton;
+        let modalCalendarGrid;
+        let displayUserIdElement;
+        let mixedCouponChoiceModal; // New modal
+        let choiceTemuButton; // New button
+        let choiceUberEatsButton; // New button
+
+
+        // Function to get the number of days in a month
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        // Function to get the first day of the month (0=Sunday, 6=Saturday)
+        function getFirstDayOfMonth(year, month) {
+            return new Date(year, month, 1).getDay();
+        }
+
+        // Function to generate coupon codes (still generate internally, but not displayed)
+        function generateCouponCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 10; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            return newCoupon;
-        });
+            return `CODE${result}`; // Simplified code prefix as it's not displayed
+        }
 
-        let selectedCouponId = null; // ID of the coupon currently selected for assignment
-        let assignedDays = new Map(); // Maps day number to coupon ID (e.g., 5 -> 'ubereats1')
+        // Function to initialize the couponsData structure with default values
+        function initializeCouponsDataStructure() {
+            couponsData = []; // Clear previous data
+            const couponTypes = [
+                { id: 'coupon-0', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
+                // Removed coupon-1 to have only two Uber Eats coupons
+                { id: 'coupon-1', type: 'mixed-temu-ubereats', offer: 'Pedido Mixto', description: 'de Temu o 2 Uber Eats.' },
+                { id: 'coupon-2', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' }
+                // Removed coupon-3 and coupon-4 to have only two Uber Eats coupons
+            ];
+            
+            // Re-index coupon IDs to be sequential after removal
+            // This is important for consistency if you always want coupon-0, coupon-1, etc.
+            // If the user wants specific coupons removed, then the IDs should be preserved.
+            // Based on "quita dos cupones de ubereats", I'm assuming removing from the default list
+            // and keeping the first and last of the original uber-eats, plus the mixed.
+            // Let's re-structure to ensure 2 uber-eats and 1 mixed coupon.
 
-        // DOM elements
-        const calendarGrid = document.querySelector('#calendar-grid');
-        const couponsContainer = document.getElementById('couponsContainer');
-        const temuModeSelectionModal = document.getElementById('temuModeSelectionModal');
-        const closeTemuModalButton = document.getElementById('closeTemuModal');
-        const selectTemuModeTemuButton = document.getElementById('selectTemuModeTemu');
-        const selectTemuModeUberEatsButton = document.getElementById('selectTemuModeUberEats');
+            // Define coupon types explicitly for 2 Uber Eats + 1 Mixed
+            const newCouponTypes = [
+                { id: 'coupon-0', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
+                { id: 'coupon-1', type: 'mixed-temu-ubereats', offer: 'Pedido Mixto', description: 'de Temu o 2 Uber Eats.' },
+                { id: 'coupon-2', type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' }
+            ];
 
-        /**
-         * Initializes Firebase and authenticates the user.
-         * Sets up real-time data listening with Firestore.
-         */
-        async function initializeFirebaseAndLoadData() {
-            try {
-                // Dynamically import Firebase modules
-                const firebaseModules = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
-                const authModules = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-                const firestoreModules = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
 
-                // Assign imported functions to global variables
-                firebaseApp = firebaseModules.initializeApp(firebaseConfig);
-                auth = authModules.getAuth(firebaseApp);
-                db = firestoreModules.getFirestore(firebaseApp);
-                doc = firestoreModules.doc;
-                setDoc = firestoreModules.setDoc;
-                onSnapshot = firestoreModules.onSnapshot;
-                collection = firestoreModules.collection;
-
-                if (!firebaseConfig) {
-                    console.error("Firebase configuration is missing.");
-                    renderCalendar();
-                    renderCoupons();
-                    return;
-                }
-
-                if (initialAuthToken) {
-                    await authModules.signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await authModules.signInAnonymously(auth);
-                }
-
-                authModules.onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        console.log("Firebase user ID:", userId);
-                        listenToFirestoreData();
-                    } else {
-                        userId = 'anonymous';
-                        console.log("Firebase: No user is signed in.");
-                        listenToFirestoreData();
-                    }
+            newCouponTypes.forEach(couponInfo => {
+                couponsData.push({
+                    id: couponInfo.id,
+                    code: generateCouponCode(), // Generate code even if not displayed
+                    offer: couponInfo.offer,
+                    description: couponInfo.description,
+                    assignedDay: null,
+                    assignedType: null, // To store what it was assigned as (temu or uber-eats)
+                    type: couponInfo.type, // The base type (uber-eats or mixed-temu-ubereats)
+                    element: null // This will be set after DOM creation
                 });
-
-            } catch (error) {
-                console.error("Error initializing Firebase or signing in:", error);
-                renderCalendar();
-                renderCoupons();
-            }
-        }
-
-        /**
-         * Listens to Firestore data for the current user and updates the UI.
-         */
-        function listenToFirestoreData() {
-            if (!db || !userId || !doc || !onSnapshot) {
-                console.log("Firestore, userId, or Firestore functions not ready, skipping data listener.");
-                return;
-            }
-
-            // Using a PUBLIC path for shared data
-            const docRef = doc(db, `artifacts/${appId}/public/data/sharedCouponState`, 'current');
-
-            onSnapshot(docRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const savedState = docSnap.data();
-                    console.log("Loaded state from Firestore:", savedState);
-
-                    // Reinitialize coupons based on couponData definition to reset to default state
-                    coupons = couponData.map(c => {
-                        const newCoupon = {
-                            ...c,
-                            isUsed: false,
-                            assignedDays: [],
-                            currentAssignments: 0
-                        };
-                        // For Temu coupon, set its initial chosenMode and maxAssignments from saved state
-                        if (newCoupon.type === 'temu') {
-                             const savedTemuCoupon = savedState.coupons.find(sc => sc.id === newCoupon.id);
-                             newCoupon.chosenMode = savedTemuCoupon ? savedTemuCoupon.chosenMode : 'unselected';
-                             newCoupon.maxAssignments = newCoupon.chosenMode === 'ubereats' ? newCoupon.maxAssignmentsUberMode : newCoupon.initialMaxAssignments;
-                             newCoupon.currentDisplayType = newCoupon.chosenMode === 'ubereats' ? 'ubereats' : newCoupon.initialType;
-                        } else {
-                            newCoupon.maxAssignments = newCoupon.initialMaxAssignments;
-                            newCoupon.currentDisplayType = newCoupon.type;
-                        }
-                        return newCoupon;
-                    });
-
-
-                    // Apply loaded state to the coupons
-                    if (savedState.coupons && Array.isArray(savedState.coupons)) {
-                        savedState.coupons.forEach(savedCoupon => {
-                            const localCoupon = coupons.find(c => c.id === savedCoupon.id);
-                            if (localCoupon) {
-                                // Temu specific: update chosenMode and currentDisplayType
-                                if (localCoupon.type === 'temu') {
-                                    localCoupon.chosenMode = savedCoupon.chosenMode || 'unselected';
-                                    localCoupon.maxAssignments = localCoupon.chosenMode === 'ubereats' ? localCoupon.maxAssignmentsUberMode : localCoupon.initialMaxAssignments;
-                                    localCoupon.currentDisplayType = localCoupon.chosenMode === 'ubereats' ? 'ubereats' : localCoupon.initialType;
-                                }
-
-                                localCoupon.assignedDays = Array.isArray(savedCoupon.assignedDays)
-                                    ? savedCoupon.assignedDays.map(Number)
-                                    : [];
-                                localCoupon.currentAssignments = localCoupon.assignedDays.length;
-                                localCoupon.isUsed = localCoupon.currentAssignments === localCoupon.maxAssignments;
-                            }
-                        });
-                    }
-
-                    // Rebuild assignedDays map from the updated coupons state for consistency
-                    assignedDays.clear();
-                    coupons.forEach(coupon => {
-                        if (coupon.assignedDays && Array.isArray(coupon.assignedDays)) {
-                            coupon.assignedDays.forEach(day => {
-                                assignedDays.set(day, coupon.id);
-                            });
-                        }
-                    });
-
-                    selectedCouponId = savedState.selectedCouponId || null;
-
-                    renderCalendar();
-                    renderCoupons();
-                } else {
-                    console.log("No saved state found for this user. Initializing default state.");
-                    renderCalendar();
-                    renderCoupons();
-                    saveCouponState();
-                }
-            }, (error) => {
-                console.error("Error listening to Firestore data:", error);
-                renderCalendar();
-                renderCoupons();
             });
+            console.log('Coupons data structure initialized with 2 Uber Eats and 1 mixed coupon.');
         }
 
-        /**
-         * Saves the current coupon state to Firestore.
-         */
-        async function saveCouponState() {
-            if (!db || !userId || !doc || !setDoc) {
-                console.log("Firestore, userId, or Firestore functions not ready, cannot save state.");
-                return;
-            }
+        // Function to generate calendar days for main calendar and modal
+        function generateCalendarDays(targetGrid, isModal = false) {
+            // Clear existing days
+            targetGrid.innerHTML = '';
 
-            // Using a PUBLIC path for shared data
-            const docRef = doc(db, `artifacts/${appId}/public/data/sharedCouponState`, 'current');
-            const stateToSave = {
-                coupons: coupons.map(c => {
-                    const couponData = {
-                        id: c.id,
-                        isUsed: c.isUsed,
-                        assignedDays: c.assignedDays,
-                        currentAssignments: c.currentAssignments,
-                        maxAssignments: c.maxAssignments
-                    };
-                    if (c.type === 'temu') {
-                        couponData.chosenMode = c.chosenMode;
-                    }
-                    return couponData;
-                }),
-                selectedCouponId: selectedCouponId,
-                assignedDays: Object.fromEntries(assignedDays)
-            };
-            try {
-                await setDoc(docRef, stateToSave, { merge: true });
-                console.log("Coupon state saved to Firestore.");
-            } catch (e) {
-                console.error("Error saving coupon state:", e);
-            }
-        }
+            const daysInMonth = getDaysInMonth(year, month);
+            const firstDay = getFirstDayOfMonth(year, month);
 
-        /**
-         * Renders the calendar days for July 2025.
-         */
-        function renderCalendar() {
-            calendarGrid.innerHTML = ''; // Clear previous days
-
-            const year = 2025;
-            const month = 6; // July is month 6 (0-indexed)
-            const firstDayOfMonth = new Date(year, month, 1);
-            const startingDayOfWeek = firstDayOfMonth.getDay(); // 0 for Sunday, 1 for Monday, etc.
-
-            // Add empty days for the offset (Sunday is 0, Monday is 1, etc.)
-            for (let i = 0; i < startingDayOfWeek; i++) {
+            // Add empty divs for the days before the 1st
+            for (let i = 0; i < firstDay; i++) {
                 const emptyDay = document.createElement('div');
-                emptyDay.className = 'calendar-day empty-day';
-                calendarGrid.appendChild(emptyDay);
+                emptyDay.classList.add('p-3', 'text-center', 'bg-gray-200', 'rounded-md');
+                targetGrid.appendChild(emptyDay);
             }
 
-            // Add actual days
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+            // Add days of the month
+            for (let i = 1; i <= daysInMonth; i++) {
                 const dayElement = document.createElement('div');
-                dayElement.id = `day-${dayNum}`;
-                dayElement.className = 'calendar-day';
-                dayElement.dataset.day = dayNum;
+                dayElement.classList.add('p-3', 'text-center', 'rounded-md', 'shadow-sm', 'font-medium');
 
-                const dayNumberSpan = document.createElement('span');
-                dayNumberSpan.textContent = dayNum;
-                dayNumberSpan.className = 'text-lg font-bold';
-                dayElement.appendChild(dayNumberSpan);
+                // Base style for calendar days
+                if (isModal) {
+                    dayElement.classList.add('bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'text-gray-700');
+                } else {
+                    dayElement.classList.add('bg-gray-50', 'text-gray-700');
+                }
+
+                dayElement.textContent = i;
+                dayElement.dataset.day = i; // Store day number in data attribute
+
+                let dayContent = `${i}`; // Default content for the day
 
                 // Apply rose square styling for the 21st day
-                if (dayNum === 21) {
+                if (i === 21) {
+                    dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'text-gray-700');
                     dayElement.classList.add('calendar-day-rose');
                 }
 
-                // Check if a coupon is assigned to this day and display it
-                if (assignedDays.has(dayNum)) {
-                    const assignedCouponId = assignedDays.get(dayNum);
-                    const assignedCoupon = coupons.find(c => c.id === assignedCouponId);
-                    if (assignedCoupon) {
-                        const couponLabel = document.createElement('span');
-                        // Use currentDisplayType for calendar label styling and text
-                        couponLabel.className = `coupon-assigned ${assignedCoupon.currentDisplayType}-assigned`;
-                        couponLabel.textContent = assignedCoupon.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats';
-                        dayElement.appendChild(couponLabel);
+                // Check if day is already assigned for both calendars
+                if (assignedDaysMap.has(i)) {
+                    const assignedType = assignedDaysMap.get(i);
+                    dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'calendar-day-rose', 'text-gray-700', 'calendar-day-temp-selected'); // Remove temp selected and base styles
+                    
+                    if (assignedType === 'uber-eats') {
+                        dayElement.classList.add('calendar-day-uber-eats-assigned');
+                    } else if (assignedType === 'temu') {
+                        dayElement.classList.add('calendar-day-temu-assigned');
                     }
+                    dayElement.classList.add('cursor-not-allowed'); // Ensure it's not clickable in modal too
+                    dayContent += `<br><span class="text-xs text-white">(¡Cupón aquí!)</span>`; // Changed to white for better contrast
+                } else if (isModal && selectedDaysForTwoCoupons.includes(i)) {
+                    // Apply temporary selected style for two-day selection in modal
+                    dayElement.classList.add('calendar-day-temp-selected');
+                }
+                 else if (isModal) {
+                    dayElement.classList.add('cursor-pointer', 'hover:bg-blue-200'); // Only clickable in modal if not assigned
                 }
 
-                // Add click listener
-                dayElement.addEventListener('click', () => handleDayClick(dayElement, dayNum));
-                calendarGrid.appendChild(dayElement);
+
+                dayElement.innerHTML = dayContent; // Set the inner HTML
+                targetGrid.appendChild(dayElement);
             }
         }
 
-        /**
-         * Handles the click event on a calendar day.
-         * @param {HTMLElement} dayElement - The DOM element of the clicked day.
-         * @param {number} dayNumber - The number of the day (1-31).
-         */
-        function handleDayClick(dayElement, dayNumber) {
-            if (selectedCouponId) {
-                // A coupon is currently selected for assignment
-                if (assignedDays.has(dayNumber)) {
-                    console.log(`El día ${dayNumber} ya tiene un cupón asignado.`);
-                    return;
-                }
-
-                const couponToAssign = coupons.find(c => c.id === selectedCouponId);
-
-                if (couponToAssign) {
-                    // Check if this coupon can still be assigned more days
-                    if (couponToAssign.currentAssignments < couponToAssign.maxAssignments) {
-                        couponToAssign.assignedDays.push(dayNumber); // Add day to array
-                        couponToAssign.currentAssignments++;
-
-                        // Mark coupon as used if it reaches max assignments
-                        if (couponToAssign.currentAssignments === couponToAssign.maxAssignments) {
-                            couponToAssign.isUsed = true;
-                        }
-
-                        assignedDays.set(dayNumber, selectedCouponId); // Update global map
-
-                        // Visual updates for the day
-                        const couponLabel = document.createElement('span');
-                        // Use currentDisplayType for calendar label styling and text
-                        couponLabel.className = `coupon-assigned ${couponToAssign.currentDisplayType}-assigned`;
-                        couponLabel.textContent = couponToAssign.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats';
-                        dayElement.appendChild(couponLabel);
-
-                        // Visual updates for the coupon card
-                        const couponCard = document.getElementById(selectedCouponId);
-                        if (couponCard) {
-                            if (couponToAssign.isUsed) {
-                                couponCard.classList.remove('selected');
-                                couponCard.classList.add('used');
-                            }
-                        }
-
-                        // If the coupon is fully used, deselect it. Otherwise, keep it selected for more assignments.
-                        if (couponToAssign.isUsed) {
-                            selectedCouponId = null;
-                        }
-                        renderCoupons();
-                        renderCalendar();
-                        saveCouponState();
-                    } else {
-                        console.log(`El cupón ${couponToAssign.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats'} ya ha alcanzado su límite de asignaciones (${couponToAssign.maxAssignments} días).`);
-                    }
-                }
-            } else {
-                // No coupon is selected for assignment, check if day has an assigned coupon to unassign it
-                if (assignedDays.has(dayNumber)) {
-                    const assignedCouponId = assignedDays.get(dayNumber);
-                    const unassignedCoupon = coupons.find(c => c.id === assignedCouponId);
-
-                    if (unassignedCoupon) {
-                        // Remove the specific day from the assignedDays array of the coupon
-                        unassignedCoupon.assignedDays = unassignedCoupon.assignedDays.filter(day => day !== dayNumber);
-                        unassignedCoupon.currentAssignments--;
-
-                        // If current assignments drop below max, it's no longer fully used
-                        if (unassignedCoupon.currentAssignments < unassignedCoupon.maxAssignments) {
-                            unassignedCoupon.isUsed = false;
-                        }
-
-                        assignedDays.delete(dayNumber); // Remove from the global map
-
-                        // If Temu coupon is fully unassigned, reset its mode
-                        if (unassignedCoupon.type === 'temu' && unassignedCoupon.currentAssignments === 0) {
-                            unassignedCoupon.chosenMode = 'unselected';
-                            unassignedCoupon.maxAssignments = unassignedCoupon.initialMaxAssignments;
-                            unassignedCoupon.currentDisplayType = unassignedCoupon.initialType; // Reset display type to temu
-                            console.log(`Cupón Temu (${unassignedCoupon.id}) reseteado a modo no seleccionado.`);
-                        }
-
-                        // Remove visual coupon label from the day element
-                        const couponLabel = dayElement.querySelector('.coupon-assigned');
-                        if (couponLabel) {
-                            dayElement.removeChild(couponLabel);
-                        }
-
-                        // Update visual for the coupon card (make it available again if not fully used)
-                        const couponCard = document.getElementById(unassignedCoupon.id);
-                        if (couponCard) {
-                            if (!unassignedCoupon.isUsed) {
-                                couponCard.classList.remove('used');
-                                // If Temu coupon is reset, ensure it also removes ubereats-mode class
-                                if (unassignedCoupon.type === 'temu' && unassignedCoupon.chosenMode === 'unselected') {
-                                     couponCard.classList.remove('ubereats-mode');
-                                }
-                            }
-                        }
-
-                        renderCoupons();
-                        renderCalendar();
-                        saveCouponState(); // Save state after unassignment
-                        console.log(`Cupón ${unassignedCoupon.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats'} quitado del día ${dayNumber}.`);
-                    }
-                } else {
-                    console.log(`Día ${dayNumber} clickeado, pero ningún cupón está seleccionado ni asignado.`);
-                }
-            }
-        }
-
-        /**
-         * Renders the coupon cards based on their current state.
-         */
-        function renderCoupons() {
-            couponsContainer.innerHTML = ''; // Clear previous coupons
-
-            coupons.forEach(coupon => {
-                const couponCard = document.createElement('div');
-                couponCard.id = coupon.id;
-                // Add class for overall coupon type and a specific class if it's Temu in UberEats mode
-                couponCard.className = `coupon-card ${coupon.currentDisplayType} ${coupon.type === 'temu' && coupon.chosenMode === 'ubereats' ? 'ubereats-mode' : ''}`;
-
-
-                if (coupon.isUsed) {
-                    couponCard.classList.add('used');
-                } else {
-                    couponCard.classList.remove('used');
-                }
-
-                if (selectedCouponId === coupon.id) {
-                    couponCard.classList.add('selected');
-                } else {
-                    couponCard.classList.remove('selected');
-                }
-
-                // Status line (e.g., "Cupón Disponible" or "Usado para el día X/Y días")
-                const statusP = document.createElement('p');
-                statusP.className = 'text-sm font-semibold mb-1';
-                statusP.id = `${coupon.id}-status`;
-                if (coupon.currentAssignments > 0) {
-                    statusP.textContent = `Usado (${coupon.currentAssignments}/${coupon.maxAssignments} días)`;
-                    statusP.classList.add('text-red-700');
-                } else {
-                    statusP.textContent = 'Cupón Disponible';
-                    // Conditional text color based on coupon type for available status
-                    statusP.classList.add(coupon.currentDisplayType === 'temu' ? 'text-amber-700' : 'text-green-900');
-                }
-                couponCard.appendChild(statusP);
-
-                // Main title (e.g., "Asignar Uber Eats" or "Asignar Temu")
-                const mainTitle = document.createElement('h3');
-                mainTitle.className = 'coupon-text';
-                mainTitle.textContent = `Asignar ${coupon.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats'}`;
-                couponCard.appendChild(mainTitle);
-
-                // Add click listener to the card
-                couponCard.addEventListener('click', () => handleCouponClick(coupon.id));
-                couponsContainer.appendChild(couponCard);
-            });
-        }
-
-        /**
-         * Handles the click event on a coupon card.
-         * @param {string} couponId - The ID of the clicked coupon.
-         */
-        function handleCouponClick(couponId) {
-            const clickedCoupon = coupons.find(c => c.id === couponId);
-
-            // If the coupon is fully used, prevent selection
-            if (clickedCoupon.currentAssignments === clickedCoupon.maxAssignments) {
-                console.log(`El cupón ${clickedCoupon.currentDisplayType === 'temu' ? 'Temu' : 'Uber Eats'} ya ha alcanzado su límite de asignaciones.`);
+        // Function to update the state of the coupon card and its buttons
+        function updateCouponCardState(couponId) {
+            const coupon = couponsData.find(c => c.id === couponId);
+            if (!coupon || !coupon.element) {
                 return;
             }
 
-            // Special logic for Temu coupon if its mode hasn't been chosen yet
-            if (clickedCoupon.type === 'temu' && clickedCoupon.chosenMode === 'unselected') {
-                openTemuModeSelectionModal(couponId);
-            } else {
-                // Normal selection/deselection logic for other coupons or Temu after mode selection
-                if (selectedCouponId === couponId) {
-                    selectedCouponId = null; // Deselect
+            const couponCardElement = coupon.element;
+            const statusP = couponCardElement.querySelector(`#${couponId}-status`);
+            const assignButton = couponCardElement.querySelector('.assign-day-button');
+            const removeButton = couponCardElement.querySelector('.remove-day-button');
+
+            if (coupon.assignedDay) { // Check if assignedDay is not null
+                // Coupon is assigned
+                couponCardElement.classList.add('used');
+                let assignedDaysText = '';
+                if (Array.isArray(coupon.assignedDay)) {
+                    assignedDaysText = coupon.assignedDay.join(' y ');
                 } else {
-                    selectedCouponId = couponId; // Select
+                    assignedDaysText = coupon.assignedDay;
                 }
-                renderCoupons(); // Re-render to update selection visual
-            }
-        }
-
-        // --- Temu Mode Selection Modal Functions ---
-        let currentTemuCouponId = null; // Store which Temu coupon is being configured
-
-        function openTemuModeSelectionModal(couponId) {
-            currentTemuCouponId = couponId;
-            temuModeSelectionModal.classList.add('show');
-        }
-
-        function closeTemuModeSelectionModal() {
-            temuModeSelectionModal.classList.remove('show');
-            currentTemuCouponId = null; // Clear the current Temu coupon
-        }
-
-        // Event listeners for Temu mode selection buttons
-        selectTemuModeTemuButton.addEventListener('click', () => {
-            if (currentTemuCouponId) {
-                selectTemuMode(currentTemuCouponId, 'temu');
-            }
-        });
-
-        selectTemuModeUberEatsButton.addEventListener('click', () => {
-            if (currentTemuCouponId) {
-                selectTemuMode(currentTemuCouponId, 'ubereats');
-            }
-        });
-
-        closeTemuModalButton.addEventListener('click', closeTemuModeSelectionModal);
-
-        // Close modal when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === temuModeSelectionModal) {
-                closeTemuModeSelectionModal();
-            }
-        });
-
-        /**
-         * Sets the mode for the Temu coupon and updates its maxAssignments.
-         * @param {string} couponId - The ID of the Temu coupon.
-         * @param {string} mode - The chosen mode ('temu' or 'ubereats').
-         */
-        function selectTemuMode(couponId, mode) {
-            const temuCoupon = coupons.find(c => c.id === couponId);
-            if (temuCoupon && temuCoupon.type === 'temu') {
-                temuCoupon.chosenMode = mode;
-                if (mode === 'ubereats') {
-                    temuCoupon.maxAssignments = temuCoupon.maxAssignmentsUberMode;
-                    temuCoupon.currentDisplayType = 'ubereats'; // Set display type to ubereats
-                } else { // 'temu' mode
-                    temuCoupon.maxAssignments = temuCoupon.initialMaxAssignments;
-                    temuCoupon.currentDisplayType = temuCoupon.initialType; // Reset display type to temu
+                if (statusP) statusP.textContent = `Usado para el día ${assignedDaysText} de Julio`;
+                
+                if (assignButton) {
+                    assignButton.disabled = true;
+                    assignButton.textContent = 'Cupón Usado';
                 }
-                // Automatically select the Temu coupon after mode choice
-                selectedCouponId = couponId;
-                closeTemuModeSelectionModal();
-                renderCoupons(); // Re-render to show updated maxAssignments and visual type
-                saveCouponState(); // Save the mode change
+                if (removeButton) {
+                    removeButton.disabled = false;
+                    removeButton.classList.remove('hidden'); // Show remove button
+                }
+            } else {
+                // Coupon is unassigned
+                couponCardElement.classList.remove('used');
+                let couponTitleText = 'Tu Cupón ';
+                if (coupon.type === 'temu') {
+                    couponTitleText += 'de Temu';
+                } else if (coupon.type === 'uber-eats') {
+                    couponTitleText += 'Uber Eats';
+                } else if (coupon.type === 'mixed-temu-ubereats') {
+                    couponTitleText += 'Especial'; // Or whatever default title you want for the mixed one
+                }
+                if (statusP) statusP.textContent = couponTitleText;
+                
+                if (assignButton) {
+                    assignButton.disabled = false;
+                    assignButton.textContent = 'Asignar Día';
+                }
+                if (removeButton) {
+                    removeButton.disabled = true;
+                    removeButton.classList.add('hidden'); // Hide remove button
+                }
             }
         }
 
-        // Initial rendering when the page loads
-        window.onload = initializeFirebaseAndLoadData;
+        // Function to save coupon data to Firestore
+        async function saveCouponData() {
+            if (!isFirebaseReady || !userId) {
+                console.warn("Firebase no está listo o userId no está disponible para guardar. Saltando guardado.");
+                return;
+            }
+            try {
+                // Create a serializable version of couponsData (remove DOM element references)
+                const serializableCoupons = couponsData.map(coupon => ({
+                    id: coupon.id,
+                    code: coupon.code,
+                    offer: coupon.offer,
+                    description: coupon.description,
+                    assignedDay: coupon.assignedDay,
+                    assignedType: coupon.assignedType, // Save the actual type it was assigned as
+                    type: coupon.type // The base type
+                }));
+                
+                // Use the canvasAppId for the collection path
+                // Note: __app_id is a global variable provided by the Canvas environment.
+                const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const userDocRef = doc(db, `artifacts/${canvasAppId}/users/${userId}/coupons_data`, 'user_coupons');
+                await setDoc(userDocRef, { coupons: serializableCoupons }, { merge: false }); // Overwrite entire coupons array
+                console.log("Datos de cupón guardados exitosamente.");
+            } catch (error) {
+                console.error("Error al guardar datos de cupón:", error);
+            }
+        }
+
+        // Function to load coupon data from Firestore
+        async function loadCouponData() {
+            if (!isFirebaseReady || !userId) {
+                console.warn("Firebase no está listo o userId no está disponible para cargar. Saltando carga.");
+                return;
+            }
+            try {
+                const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const userDocRef = doc(db, `artifacts/${canvasAppId}/users/${userId}/coupons_data`, 'user_coupons');
+                const docSnap = await getDoc(userDocRef);
+
+                if (docSnap.exists()) {
+                    const loadedData = docSnap.data();
+                    if (loadedData && loadedData.coupons) {
+                        console.log("Datos de cupón sin procesar cargados:", loadedData.coupons);
+                        
+                        // Update couponsData array and assignedDaysMap from loaded data
+                        couponsData.forEach(defaultCoupon => {
+                            const loadedMatch = loadedData.coupons.find(lc => lc.id === defaultCoupon.id);
+                            if (loadedMatch) {
+                                defaultCoupon.assignedDay = loadedMatch.assignedDay;
+                                defaultCoupon.assignedType = loadedMatch.assignedType; // Load assigned type
+                                defaultCoupon.type = loadedMatch.type; // Load base type
+                            }
+                        });
+
+                        assignedDaysMap.clear(); // Clear existing map before rebuilding
+                        couponsData.forEach(coupon => {
+                            if (coupon.assignedDay) {
+                                // If assignedDay is an array (for 2 Uber Eats), set each day individually
+                                if (Array.isArray(coupon.assignedDay)) {
+                                    coupon.assignedDay.forEach(day => {
+                                        assignedDaysMap.set(day, coupon.assignedType);
+                                    });
+                                } else {
+                                    assignedDaysMap.set(coupon.assignedDay, coupon.assignedType);
+                                }
+                            }
+                        });
+                        console.log("Datos de cupón cargados exitosamente. assignedDaysMap:", assignedDaysMap);
+                    }
+                } else {
+                    console.log("No se encontraron datos de cupón guardados para este usuario.");
+                }
+            } catch (error) {
+                console.error("Error al cargar datos de cupón:", error);
+            }
+        }
+
+        // Function to remove coupon assignment
+        async function removeCouponAssignment(couponId) {
+            console.log('Intentando eliminar asignación para el cupón:', couponId);
+            const couponToRemove = couponsData.find(c => c.id === couponId);
+
+            if (couponToRemove) {
+                // If it was assigned as two Uber Eats, unassign both days
+                if (couponToRemove.type === 'mixed-temu-ubereats' && couponToRemove.assignedType === 'uber-eats' && couponToRemove.assignedDay && Array.isArray(couponToRemove.assignedDay)) {
+                     couponToRemove.assignedDay.forEach(day => {
+                        assignedDaysMap.delete(day);
+                    });
+                } else if (couponToRemove.assignedDay) { // For single day assignments
+                    assignedDaysMap.delete(couponToRemove.assignedDay); // Remove from map
+                }
+                
+                couponToRemove.assignedDay = null; // Clear assignment in coupon data
+                couponToRemove.assignedType = null; // Clear assigned type
+                
+                console.log(`Cupón ${couponId} desasignado.`);
+                updateCouponCardState(couponId); // Update the coupon card's state
+                generateCalendarDays(calendarGrid); // Re-render main calendar to ensure consistency
+                await saveCouponData(); // Save changes after removal
+            } else {
+                console.log('Cupón no encontrado o no asignado:', couponId);
+            }
+        }
+
+
+        // Display coupons and set up initial state
+        function displayCoupons() {
+            console.log('Mostrando cupones y adjuntando escuchadores de eventos.');
+            couponList.innerHTML = ''; // Clear existing coupons to re-render
+            
+            // Re-create DOM elements for coupons based on the current couponsData array
+            couponsData.forEach(couponInfo => {
+                const couponCard = document.createElement('div');
+                couponCard.classList.add('coupon-card', 'p-5', 'rounded-xl', 'text-center', 'relative');
+                couponCard.id = couponInfo.id; // Assign ID to the card
+
+                // Add specific class for Temu or mixed coupon
+                if (couponInfo.type === 'temu') {
+                    couponCard.classList.add('temu');
+                } else if (couponInfo.type === 'mixed-temu-ubereats') {
+                    couponCard.classList.add('mixed-temu-ubereats');
+                }
+
+                // Determine dynamic parts of the coupon card
+                const offerColorClass = couponInfo.type === 'mixed-temu-ubereats' || couponInfo.type === 'temu' ? 'text-amber-700' : 'text-green-900';
+                const buttonColorClasses = couponInfo.type === 'mixed-temu-ubereats' || couponInfo.type === 'temu' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-blue-500 hover:bg-blue-600';
+                const couponTitle = `Tu Cupón ${couponInfo.type === 'temu' ? 'de Temu' : couponInfo.type === 'uber-eats' ? 'Uber Eats' : 'Especial'}`;
+
+                couponCard.innerHTML = `
+                    <p class="text-sm font-semibold text-gray-800 mb-1" id="${couponInfo.id}-status">${couponTitle}</p>
+                    <h3 class="text-xl sm:text-2xl font-extrabold ${offerColorClass} mb-2">${couponInfo.offer}</h3>
+                    <p class="text-sm text-gray-700 mb-3">${couponInfo.description}</p>
+                    <button class="assign-day-button ${buttonColorClasses} text-white px-4 py-2 rounded-md transition duration-200" data-coupon-id="${couponInfo.id}">
+                        Asignar Día
+                    </button>
+                    <button class="remove-day-button bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-200 mt-2 hidden" data-coupon-id="${couponInfo.id}">
+                        Quitar Cupón
+                    </button>
+                `;
+                couponList.appendChild(couponCard);
+                couponInfo.element = couponCard; // Store reference to the DOM element
+
+                // Immediately update the state of the newly created card based on loaded data
+                updateCouponCardState(couponInfo.id);
+            });
+
+            // Attach event listeners for assign day buttons
+            couponList.querySelectorAll('.assign-day-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    activeCouponId = event.target.dataset.couponId;
+                    const coupon = couponsData.find(c => c.id === activeCouponId);
+
+                    if (coupon && coupon.type === 'mixed-temu-ubereats') {
+                        openMixedCouponChoiceModal();
+                    } else {
+                        // Reset flags for single assignment (non-mixed coupon)
+                        assigningAsTemu = false;
+                        assigningTwoUberEats = false;
+                        selectedDaysForTwoCoupons = [];
+                        openDaySelectionModal();
+                    }
+                });
+            });
+
+            // Attach event listener for remove button
+            couponList.querySelectorAll('.remove-day-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const couponIdToRemove = event.target.dataset.couponId;
+                    removeCouponAssignment(couponIdToRemove);
+                });
+            });
+        }
+
+        // --- New functions for Mixed Coupon Choice ---
+
+        function openMixedCouponChoiceModal() {
+            console.log('Abriendo modal de elección de cupón mixto.');
+            mixedCouponChoiceModal.classList.add('show');
+        }
+
+        function closeMixedCouponChoiceModal() {
+            console.log('Cerrando modal de elección de cupón mixto.');
+            mixedCouponChoiceModal.classList.remove('show');
+            // Reset state related to mixed coupon choice
+            assigningAsTemu = false;
+            assigningTwoUberEats = false;
+            selectedDaysForTwoCoupons = []; // Clear any temporary selections
+            generateCalendarDays(modalCalendarGrid, true); // Re-render modal calendar to clear highlights
+        }
+
+        // --- Existing Modal Functions ---
+
+        // Function to open the day selection modal
+        function openDaySelectionModal() {
+            console.log('Abriendo modal de selección de día.');
+            generateCalendarDays(modalCalendarGrid, true); // Regenerate modal calendar with current assigned days
+            daySelectionModal.classList.add('show');
+        }
+
+        // Function to close the day selection modal
+        function closeDaySelectionModal() {
+            console.log('Cerrando modal de selección de día.');
+            daySelectionModal.classList.remove('show');
+            activeCouponId = null; // Clear active coupon
+            // Reset two-day assignment flags and selections
+            assigningAsTemu = false;
+            assigningTwoUberEats = false;
+            selectedDaysForTwoCoupons = [];
+            generateCalendarDays(modalCalendarGrid, true); // Re-render to clear temporary highlights
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded. Initializing calendar and coupons.');
+            calendarGrid = document.getElementById('calendar-grid');
+            couponList = document.getElementById('coupon-list');
+            daySelectionModal = document.getElementById('daySelectionModal');
+            closeModalButton = daySelectionModal.querySelector('.close-button');
+            modalCalendarGrid = document.getElementById('modal-calendar-grid');
+            displayUserIdElement = document.getElementById('display-user-id');
+
+            // New elements for mixed coupon modal
+            mixedCouponChoiceModal = document.getElementById('mixedCouponChoiceModal');
+            choiceTemuButton = document.getElementById('choiceTemu');
+            choiceUberEatsButton = document.getElementById('choiceUberEats');
+
+            // Firebase Initialization
+            const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            let firebaseConfig = {};
+            try {
+                firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            } catch (e) {
+                console.error("Error al analizar __firebase_config:", e);
+                firebaseConfig = {
+                    apiKey: "AIzaSyDmO0eVx-1RLQjGsvBxNiS92Rqc2wZ5VEk",
+                    authDomain: "cupones-41b71.firebaseapp.com",
+                    projectId: "cupones-41b71",
+                    storageBucket: "cupones-41b71.firebasestorage.app",
+                    messagingSenderId: "866981366254",
+                    appId: "1:866981366254:web:16dba30b2e82ca2809e6ff",
+                    measurementId: "G-E5VY5HG9W7"
+                };
+                console.warn("Usando configuración de Firebase de respaldo. Asegúrate de que __firebase_config esté configurado en Canvas para producción.");
+            }
+
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Use onAuthStateChanged to ensure auth is ready before Firestore operations
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    displayUserIdElement.textContent = userId; // Display user ID
+                    console.log("Autenticación de Firebase lista. ID de usuario:", userId);
+                    isFirebaseReady = true;
+                    
+                    initializeCouponsDataStructure();
+                    await loadCouponData();
+                    generateCalendarDays(calendarGrid); 
+                    displayCoupons(); 
+
+                } else {
+                    console.log("Ningún usuario ha iniciado sesión. Intentando iniciar sesión anónimamente...");
+                    try {
+                        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Error al iniciar sesión anónimamente con Firebase:", error);
+                        displayUserIdElement.textContent = "Error de autenticación";
+                        initializeCouponsDataStructure();
+                        generateCalendarDays(calendarGrid);
+                        displayCoupons();
+                    }
+                }
+            });
+
+            // Event listeners for mixed coupon choice modal buttons
+            choiceTemuButton.addEventListener('click', () => {
+                closeMixedCouponChoiceModal();
+                assigningAsTemu = true; // Set flag for single Temu assignment
+                openDaySelectionModal();
+            });
+
+            choiceUberEatsButton.addEventListener('click', () => {
+                closeMixedCouponChoiceModal();
+                assigningTwoUberEats = true; // Set flag for two Uber Eats assignments
+                selectedDaysForTwoCoupons = []; // Ensure it's clear
+                openDaySelectionModal();
+            });
+
+
+            // Event listener for selecting a day in the main day selection modal
+            modalCalendarGrid.addEventListener('click', async (event) => { 
+                const dayElement = event.target.closest('div[data-day]');
+                if (dayElement) { 
+                    const selectedDay = parseInt(dayElement.dataset.day);
+
+                    if (assignedDaysMap.has(selectedDay)) {
+                        console.log('El día ya está asignado, no se puede seleccionar.');
+                        return; // Exit if day is already assigned
+                    }
+
+                    if (assigningTwoUberEats) {
+                        // Logic for selecting two Uber Eats days
+                        if (!selectedDaysForTwoCoupons.includes(selectedDay)) {
+                            selectedDaysForTwoCoupons.push(selectedDay);
+                            // Temporarily update visual for selected day in modal
+                            dayElement.classList.add('calendar-day-temp-selected');
+                            dayElement.classList.remove('hover:bg-blue-200'); // Remove hover for already selected
+
+                            if (selectedDaysForTwoCoupons.length === 2) {
+                                console.log('Dos días seleccionados para Uber Eats:', selectedDaysForTwoCoupons);
+                                const coupon = couponsData.find(c => c.id === activeCouponId);
+                                if (coupon) {
+                                    coupon.assignedDay = selectedDaysForTwoCoupons; // Assign array of days
+                                    coupon.assignedType = 'uber-eats'; // Mark as uber-eats assignment
+                                    
+                                    // Update assignedDaysMap for both selected days
+                                    selectedDaysForTwoCoupons.forEach(day => {
+                                        assignedDaysMap.set(day, 'uber-eats');
+                                    });
+
+                                    updateCouponCardState(activeCouponId);
+                                    await saveCouponData();
+                                }
+                                closeDaySelectionModal(); // Close after 2 selections
+                                generateCalendarDays(calendarGrid); // Re-render main calendar
+                            }
+                        } else {
+                            // If clicking on an already temporarily selected day, deselect it
+                            selectedDaysForTwoCoupons = selectedDaysForTwoCoupons.filter(day => day !== selectedDay);
+                            dayElement.classList.remove('calendar-day-temp-selected');
+                            dayElement.classList.add('hover:bg-blue-200');
+                        }
+                    } else {
+                        // Original logic for single day assignment (Temu or regular Uber Eats)
+                        const couponToAssign = couponsData.find(c => c.id === activeCouponId);
+
+                        if (couponToAssign) {
+                            couponToAssign.assignedDay = selectedDay;
+                            // For mixed coupon assigned as Temu, or regular Temu coupon
+                            couponToAssign.assignedType = assigningAsTemu ? 'temu' : couponToAssign.type; 
+                            assignedDaysMap.set(selectedDay, couponToAssign.assignedType); 
+
+                            updateCouponCardState(activeCouponId); 
+                            await saveCouponData(); 
+                        }
+                        closeDaySelectionModal(); 
+                        generateCalendarDays(calendarGrid); 
+                    }
+                }
+            });
+
+            // Close modal when close button is clicked
+            closeModalButton.addEventListener('click', closeDaySelectionModal);
+            mixedCouponChoiceModal.querySelector('.close-button').addEventListener('click', closeMixedCouponChoiceModal);
+
+
+            // Close modals when clicking outside of them
+            window.addEventListener('click', (event) => {
+                if (event.target === daySelectionModal) {
+                    closeDaySelectionModal();
+                }
+                if (event.target === mixedCouponChoiceModal) {
+                    closeMixedCouponChoiceModal();
+                }
+            });
+        });
     </script>
 </body>
 </html>
