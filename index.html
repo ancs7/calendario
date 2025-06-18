@@ -1,420 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Cupones Uber Eats</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for the Inter font and overall look */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light gray background */
-        }
-        .coupon-card {
-            background: linear-gradient(135deg, #a7f3d0, #6ee7b7); /* Green gradient */
-            border: 2px dashed #065f46; /* Darker green dashed border */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            position: relative; /* Needed for the pseudo-elements */
-            overflow: hidden;
-        }
-        .coupon-card:hover {
-            transform: translateY(-3px); /* Lift effect on hover */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); /* Stronger shadow on hover */
-        }
-        .coupon-card::before, .coupon-card::after {
-            content: '';
-            position: absolute;
-            background-color: #f0f4f8; /* Background color to match the body */
-            border-radius: 50%;
-            height: 20px;
-            width: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .coupon-card::before {
-            left: -10px; /* Position cutout on the left */
-        }
-        .coupon-card::after {
-            right: -10px; /* Position cutout on the right */
-        }
+  <meta charset="UTF-8">
+  <title>Calendario de Cupones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff5f8;
+      padding: 20px;
+    }
 
-        /* Style for the Temu coupon card */
-        .coupon-card.temu {
-            background: linear-gradient(135deg, #fecaca, #fbbf24); /* Orange gradient (red-200 to amber-500) */
-            border: 2px dashed #d97706; /* Darker orange dashed border (amber-700) */
-        }
-        .coupon-card.temu .text-green-900,
-        .coupon-card.temu .text-green-800,
-        .coupon-card.temu .border-green-700 {
-            color: #d97706; /* Darker orange for text */
-            border-color: #d97706; /* Darker orange for border */
-        }
-        .coupon-card.temu .assign-day-button {
-            background-color: #f97316; /* Orange-600 for button */
-            border-color: #f97316;
-        }
-        .coupon-card.temu .assign-day-button:hover {
-            background-color: #ea580c; /* Orange-700 on hover */
-        }
+    h1 {
+      color: #d6336c;
+    }
 
-        /* Style for used coupon cards (red/grayed out) */
-        .coupon-card.used {
-            background: linear-gradient(135deg, #fecaca, #ef4444); /* Red gradient (red-200 to red-500) */
-            border: 2px dashed #b91c1c; /* Darker red dashed border (red-700) */
-            opacity: 0.7;
-            cursor: default;
-        }
-        .coupon-card.used:hover {
-            transform: none; /* No lift effect for used coupons */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Original shadow for used coupons */
-        }
-        .coupon-card.used .text-gray-800,
-        .coupon-card.used .text-green-900,
-        .coupon-card.used .text-amber-700,
-        .coupon-card.used .text-gray-700 {
-            color: #7f1d1d; /* Dark red text for used coupons */
-        }
-        .coupon-card.used .assign-day-button {
-            background-color: #b91c1c; /* Red-700 for used button */
-            cursor: not-allowed;
-        }
-        .coupon-card.used .assign-day-button:hover {
-            background-color: #b91c1c; /* No hover effect for used button */
-        }
+    .dia {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background-color: #fff;
+    }
 
-        /* Style for selected day in calendar */
-        .calendar-day-assigned {
-            background-color: #60a5fa; /* Blue for assigned days */
-            color: white;
-            font-weight: bold;
-            border: 1px solid #2563eb;
-        }
-        /* Custom style for the 21st day - pink square */
-        .calendar-day-rose {
-            background-color: #fbcfe8; /* Tailwind pink-200 for a soft rose color */
-            border: 1px solid #f472b6; /* Tailwind pink-400 for border */
-            font-weight: bold;
-            color: #831843; /* Darker pink for text */
-        }
-        /* Modal styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1001; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .modal.show {
-            display: flex;
-            opacity: 1;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 500px;
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+    .usado {
+      background-color: #e6e6e6;
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    button {
+      padding: 5px 10px;
+      background-color: #ff85a2;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+<body>
 
-    <div class="max-w-4xl w-full bg-white rounded-lg shadow-xl p-6 sm:p-8">
-        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-6">
-            Calendario de Julio 2025 para mi Amor ❤️
-        </h1>
-        <p class="text-center text-gray-600 mb-8">
-            Aquí tienes tu calendario de Julio con algunas sorpresas especiales para tus antojos de Uber Eats. ¡Haz clic en "Asignar Día" en un cupón para elegir cuándo usarlo!
-        </p>
+  <h1>🎁 Calendario de Cupones para Mi Amor</h1>
 
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Calendar Section -->
-            <div class="flex-1">
-                <div class="bg-blue-600 text-white p-4 rounded-t-lg text-center text-2xl font-semibold">
-                    Julio 2025
-                </div>
-                <div class="grid grid-cols-7 gap-1 text-center bg-blue-500 text-white py-2 rounded-b-lg">
-                    <div class="p-2 font-semibold">Dom</div>
-                    <div class="p-2 font-semibold">Lun</div>
-                    <div class="p-2 font-semibold">Mar</div>
-                    <div class="p-2 font-semibold">Mié</div>
-                    <div class="p-2 font-semibold">Jue</div>
-                    <div class="p-2 font-semibold">Vie</div>
-                    <div class="p-2 font-semibold">Sáb</div>
-                </div>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1 mt-4">
-                    <!-- Calendar days will be generated here by JavaScript -->
-                </div>
-            </div>
+  <div class="dia" id="dia1">
+    <p>Día 1: Cupón de UberEats 🍔</p>
+    <button onclick="canjear('dia1')">Canjear</button>
+  </div>
 
-            <!-- Coupons Section -->
-            <div class="flex-1 bg-gray-50 p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Tus Cupones</h2>
-                <div id="coupon-list" class="space-y-4">
-                    <!-- Coupons will be generated here by JavaScript -->
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="dia" id="dia2">
+    <p>Día 2: Cupón de Temu 🛍️</p>
+    <button onclick="canjear('dia2')">Canjear</button>
+  </div>
 
-    <!-- The Modal for Day Selection -->
-    <div id="daySelectionModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Selecciona un día para tu cupón</h3>
-            <div id="modal-calendar-grid" class="grid grid-cols-7 gap-1 text-center mt-4">
-                <!-- Modal calendar days will be generated here -->
-            </div>
-        </div>
-    </div>
+  <div class="dia" id="dia3">
+    <p>Día 3: Un abrazo gigante 🤗</p>
+    <button onclick="canjear('dia3')">Canjear</button>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const calendarGrid = document.getElementById('calendar-grid');
-            const couponList = document.getElementById('coupon-list');
-            const daySelectionModal = document.getElementById('daySelectionModal');
-            const closeModalButton = daySelectionModal.querySelector('.close-button');
-            const modalCalendarGrid = document.getElementById('modal-calendar-grid');
+  <script>
+    function canjear(id) {
+      const bloque = document.getElementById(id);
+      bloque.classList.add('usado');
+      const boton = bloque.querySelector('button');
+      boton.innerText = "Canjeado ✅";
+      boton.disabled = true;
+      alert("¡Cupón canjeado! 💖");
+    }
+  </script>
 
-            const year = 2025;
-            const month = 6; // July is month 6 (0-indexed)
-
-            let assignedDays = new Set(); // To keep track of days already assigned a coupon
-            let activeCouponId = null; // To store the ID of the coupon being assigned
-            let couponsData = []; // To store coupon information including assignment status
-
-            // Function to get the number of days in a month
-            function getDaysInMonth(year, month) {
-                return new Date(year, month + 1, 0).getDate();
-            }
-
-            // Function to get the first day of the month (0=Sunday, 6=Saturday)
-            function getFirstDayOfMonth(year, month) {
-                return new Date(year, month, 1).getDay();
-            }
-
-            // Generate calendar days for main calendar and modal
-            function generateCalendarDays(targetGrid, isModal = false) {
-                // Clear existing days
-                targetGrid.innerHTML = '';
-
-                const daysInMonth = getDaysInMonth(year, month);
-                const firstDay = getFirstDayOfMonth(year, month);
-
-                // Add empty divs for the days before the 1st
-                for (let i = 0; i < firstDay; i++) {
-                    const emptyDay = document.createElement('div');
-                    emptyDay.classList.add('p-3', 'text-center', 'bg-gray-200', 'rounded-md');
-                    targetGrid.appendChild(emptyDay);
-                }
-
-                // Add days of the month
-                for (let i = 1; i <= daysInMonth; i++) {
-                    const dayElement = document.createElement('div');
-                    dayElement.classList.add('p-3', 'text-center', 'rounded-md', 'shadow-sm', 'text-gray-700', 'font-medium');
-
-                    // Base style for calendar days
-                    if (isModal) {
-                        dayElement.classList.add('bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer');
-                    } else {
-                        dayElement.classList.add('bg-gray-50');
-                    }
-
-                    dayElement.textContent = i;
-                    dayElement.dataset.day = i; // Store day number in data attribute
-
-                    let dayContent = `${i}`; // Default content for the day
-
-                    // Apply rose square styling for the 21st day
-                    if (i === 21) {
-                        dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200');
-                        dayElement.classList.add('calendar-day-rose');
-                    }
-
-                    // Check if day is already assigned for both calendars
-                    if (assignedDays.has(i)) {
-                        dayElement.classList.remove('bg-gray-50', 'bg-blue-100', 'hover:bg-blue-200', 'cursor-pointer', 'calendar-day-rose'); // Remove other day styles
-                        dayElement.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'calendar-day-assigned'); // Grey out assigned days
-                        // Append coupon message if assigned
-                        dayContent += `<br><span class="text-xs text-white-300">(¡Cupón aquí!)</span>`;
-                    } else if (isModal) {
-                        dayElement.classList.add('cursor-pointer', 'hover:bg-blue-200'); // Only clickable in modal if not assigned
-                    }
-
-                    dayElement.innerHTML = dayContent; // Set the inner HTML
-                    targetGrid.appendChild(dayElement);
-                }
-            }
-
-            // Function to generate coupon codes (still generate internally, but not displayed)
-            function generateCouponCode() {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let result = '';
-                for (let i = 0; i < 10; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return `UBEREATS${result}`;
-            }
-
-            // Display coupons and set up initial state
-            function displayCoupons() {
-                // Define the coupon types
-                const couponTypes = [
-                    { type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
-                    { type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
-                    { type: 'temu', offer: 'Pedido de Temu', description: 'tu próximo pedido es gratis.' }, // Temu coupon
-                    { type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' },
-                    { type: 'uber-eats', offer: 'Pedido Gratis', description: 'en tu próximo pedido.' }
-                ];
-
-                for (let i = 0; i < 5; i++) {
-                    const couponCode = generateCouponCode(); // Code is generated but not displayed
-                    const couponId = `coupon-${i}`;
-                    const couponInfo = couponTypes[i];
-
-                    couponsData.push({
-                        id: couponId,
-                        code: couponCode, // Code is stored for potential future use, but not shown
-                        offer: couponInfo.offer,
-                        description: couponInfo.description,
-                        assignedDay: null, // Initially unassigned
-                        element: null // Will store reference to the DOM element
-                    });
-
-                    const couponCard = document.createElement('div');
-                    couponCard.classList.add('coupon-card', 'p-5', 'rounded-xl', 'text-center', 'relative');
-                    couponCard.id = couponId; // Assign ID to the card
-
-                    // Add specific class for Temu coupon
-                    if (couponInfo.type === 'temu') {
-                        couponCard.classList.add('temu');
-                    }
-
-                    couponCard.innerHTML = `
-                        <p class="text-sm font-semibold text-gray-800 mb-1" id="${couponId}-status">Tu Cupón ${couponInfo.type === 'temu' ? 'de Temu' : 'Uber Eats'}</p>
-                        <h3 class="text-xl sm:text-2xl font-extrabold ${couponInfo.type === 'temu' ? 'text-amber-700' : 'text-green-900'} mb-2">${couponInfo.offer}</h3>
-                        <p class="text-sm text-gray-700 mb-3">${couponInfo.description}</p>
-                        <button class="assign-day-button ${couponInfo.type === 'temu' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-blue-500 hover:bg-blue-600'} text-white px-4 py-2 rounded-md transition duration-200" data-coupon-id="${couponId}">
-                            Asignar Día
-                        </button>
-                    `;
-                    couponList.appendChild(couponCard);
-                    couponsData[i].element = couponCard; // Store reference to the DOM element
-                }
-
-                // Add event listeners for assign day buttons
-                couponList.querySelectorAll('.assign-day-button').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        activeCouponId = event.target.dataset.couponId;
-                        openDaySelectionModal();
-                    });
-                });
-            }
-
-            // Function to open the day selection modal
-            function openDaySelectionModal() {
-                generateCalendarDays(modalCalendarGrid, true); // Regenerate modal calendar with current assigned days
-                daySelectionModal.classList.add('show');
-            }
-
-            // Function to close the day selection modal
-            function closeDaySelectionModal() {
-                daySelectionModal.classList.remove('show');
-                activeCouponId = null; // Clear active coupon
-            }
-
-            // Event listener for selecting a day in the modal
-            modalCalendarGrid.addEventListener('click', (event) => {
-                const dayElement = event.target.closest('div[data-day]');
-                if (dayElement && !assignedDays.has(parseInt(dayElement.dataset.day))) {
-                    const selectedDay = parseInt(dayElement.dataset.day);
-
-                    // Find the active coupon
-                    const couponToAssign = couponsData.find(c => c.id === activeCouponId);
-
-                    if (couponToAssign) {
-                        couponToAssign.assignedDay = selectedDay;
-                        assignedDays.add(selectedDay);
-
-                        // Update main calendar day visual
-                        const mainCalendarDayElement = document.getElementById(`day-${selectedDay}`);
-                        if (mainCalendarDayElement) {
-                            let newDayContent = `${selectedDay}`;
-                            // Reapply rose style if it's the 21st, then add coupon message
-                            if (selectedDay === 21) {
-                                mainCalendarDayElement.classList.remove('calendar-day-rose'); // Remove initial rose styling
-                                mainCalendarDayElement.classList.add('calendar-day-assigned'); // Add assigned day styling
-                                // To ensure "21" remains visible with coupon, explicitly add it.
-                                newDayContent = `${selectedDay}<br><span class="text-xs text-white-300">(¡Cupón aquí!)</span>`;
-                            } else {
-                                mainCalendarDayElement.classList.add('calendar-day-assigned');
-                                newDayContent += `<br><span class="text-xs text-white-300">(¡Cupón aquí!)</span>`;
-                            }
-                            mainCalendarDayElement.innerHTML = newDayContent;
-                        }
-
-                        // Update coupon card visual and disable its assign button
-                        const couponCardElement = document.getElementById(activeCouponId);
-                        if (couponCardElement) {
-                            couponCardElement.classList.add('used'); // Add 'used' class to the coupon card
-                            const statusP = couponCardElement.querySelector(`#${activeCouponId}-status`);
-                            if (statusP) {
-                                statusP.textContent = `Usado para el día ${selectedDay} de Julio`; // Update status text
-                            }
-                            const assignButton = couponCardElement.querySelector('.assign-day-button');
-                            if (assignButton) {
-                                assignButton.disabled = true;
-                                assignButton.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'bg-orange-500', 'hover:bg-orange-600');
-                                assignButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-                                assignButton.textContent = 'Cupón Usado'; // Change button text
-                            }
-                        }
-                    }
-                    closeDaySelectionModal(); // Close modal after assignment
-                    generateCalendarDays(calendarGrid); // Re-render main calendar to update assigned days
-                }
-            });
-
-            // Close modal when close button is clicked
-            closeModalButton.addEventListener('click', closeDaySelectionModal);
-
-            // Close modal when clicking outside of it
-            window.addEventListener('click', (event) => {
-                if (event.target === daySelectionModal) {
-                    closeDaySelectionModal();
-                }
-            });
-
-            // Initialize the calendar and coupons
-            generateCalendarDays(calendarGrid); // Initial generation of main calendar
-            displayCoupons();
-        });
-    </script>
 </body>
 </html>
